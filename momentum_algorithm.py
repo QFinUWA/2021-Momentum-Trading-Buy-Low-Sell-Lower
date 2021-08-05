@@ -5,10 +5,10 @@ from talib.abstract import *
 from gemini_modules import engine
 
 # read in data preserving dates
-df = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
+df = pd.read_csv("data/USDT_DOGE.csv", parse_dates=[0])
 
 # globals
-training_period = 20
+training_period = 5
 
 #backtesting
 backtest = engine.backtest(df)
