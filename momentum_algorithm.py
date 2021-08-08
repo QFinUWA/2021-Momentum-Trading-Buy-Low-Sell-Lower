@@ -5,10 +5,10 @@ from talib.abstract import *
 from gemini_modules import engine
 
 # read in data preserving dates
-df = pd.read_csv("data/USDT_DOGE.csv", parse_dates=[0])
+df = pd.read_csv("data/USDT_BTC.csv", parse_dates=[0])
 
 # globals
-training_period = 5
+training_period = 10
 
 #backtesting
 backtest = engine.backtest(df)
@@ -25,11 +25,13 @@ def logic(account, lookback):
                 if(lookback['volume'][today] > volumn_moving_average):
                     if(account.buying_power > 0):
                         account.enter_position('long', account.buying_power, lookback['close'][today])
+                        #print("bought at" + str(lookback["date"][today]))
             else:
                 if(lookback['close'][today] > price_moving_average):
                     if(lookback['volume'][today] < volumn_moving_average):
                         for position in account.positions:
-                                account.close_position(position, 1, lookback['close'][today]) 
+                                account.close_position(position, 1, lookback['close'][today])
+                                #print("sold at" + str(lookback["date"][today]))
     except Exception as e:
         print(e)
     pass  # Handles lookback errors in beginning of dataset
