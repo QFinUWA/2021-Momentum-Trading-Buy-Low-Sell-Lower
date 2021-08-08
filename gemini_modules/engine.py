@@ -126,8 +126,8 @@ class backtest():
         p.yaxis.axis_label = 'Equity'
         shares = self.account.initial_capital/self.data.iloc[0]['open']
         base_equity = [price*shares for price in self.data['open']]      
-        p.line(self.data['date'], base_equity, color='#CAD8DE', legend='Buy and Hold')
-        p.line(self.data['date'], self.account.equity, color='#49516F', legend='Strategy')
+        p.line(self.data['date'], base_equity, color='#CAD8DE', legend_label='Buy and Hold')
+        p.line(self.data['date'], self.account.equity, color='#49516F', legend_label='Strategy')
         p.legend.location = "top_left"
 
         if show_trades:

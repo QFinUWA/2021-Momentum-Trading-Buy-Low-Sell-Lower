@@ -8,8 +8,9 @@ from gemini_modules import engine
 df = pd.read_csv("data/USDT_BTC.csv", parse_dates=[0])
 
 # globals
-training_period = 10
-long_training_period = 20
+training_period = int(input("short training period: "))
+long_training_period = int(input("long training period: "))
+print("Loading...")
 #backtesting
 backtest = engine.backtest(df)
 
@@ -51,13 +52,13 @@ def logic2(account, lookback):
             volumn_moving_average = lookback['volume'].rolling(window=training_period).mean()[today]  # update VMA
 
             if(yesterday_short_price_moving_average < yesterday_long_price_moving_average and short_price_moving_average >= long_price_moving_average):
-                #if(lookback['volume'][today] > volumn_moving_average):
+                if(lookback['volume'][today] > volumn_moving_average):
                     if(account.buying_power > 0):
                         account.enter_position('long', account.buying_power, lookback['close'][today])
                         #print("bought at" + str(lookback["date"][today]))
             else:
                 if(yesterday_long_price_moving_average < yesterday_short_price_moving_average and long_price_moving_average >= short_price_moving_average):
-                    #if(lookback['volume'][today] < volumn_moving_average):
+                    if(lookback['volume'][today] < volumn_moving_average):
                         for position in account.positions:
                                 account.close_position(position, 1, lookback['close'][today])
                                 #print("sold at" + str(lookback["date"][today]))
@@ -69,4 +70,7 @@ def logic2(account, lookback):
 if __name__ == "__main__":
     backtest.start(100, logic2)
     backtest.results()
+    print("short training period = " + str(training_period))
+    print("long training period = " + str(long_training_period))
+    print("Moving Average Crossover")
     backtest.chart()
