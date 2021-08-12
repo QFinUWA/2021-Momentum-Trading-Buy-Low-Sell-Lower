@@ -1,0 +1,302 @@
+
+---------------------------------------
+
+Coin: USDT_XRP
+Standard Rolling Average
+Buy and Hold : 13.31%
+Net Profit   : 13.31
+Strategy     : 150.68%
+Net Profit   : 150.68
+Strat vs Hold: 1.37
+Longs        : 300
+Sells        : 299
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 599
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_XRP
+Moving Average Crossover
+Buy and Hold : 13.31%
+Net Profit   : 13.31
+Strategy     : 100.56%
+Net Profit   : 100.56
+Strat vs Hold: 0.87
+Longs        : 185
+Sells        : 185
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 370
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_XRP
+Exponential Moving Average
+Buy and Hold : 13.31%
+Net Profit   : 13.31
+Strategy     : 9.01%
+Net Profit   : 9.01
+Strat vs Hold: -0.04
+Longs        : 1091
+Sells        : 1090
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 2181
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_BTC
+Standard Rolling Average
+Buy and Hold : 300.87%
+Net Profit   : 300.87
+Strategy     : 323.42%
+Net Profit   : 323.42
+Strat vs Hold: 0.23
+Longs        : 181
+Sells        : 180
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 361
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_BTC
+Moving Average Crossover
+Buy and Hold : 300.87%
+Net Profit   : 300.87
+Strategy     : 22.75%
+Net Profit   : 22.75
+Strat vs Hold: -2.78
+Longs        : 193
+Sells        : 193
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 386
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_BTC
+Exponential Moving Average
+Buy and Hold : 300.87%
+Net Profit   : 300.87
+Strategy     : 52.18%
+Net Profit   : 52.18
+Strat vs Hold: -2.49
+Longs        : 1050
+Sells        : 1049
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 2099
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_DOGE
+Standard Rolling Average
+Buy and Hold : 130.77%
+Net Profit   : 130.77
+Strategy     : 498.67%
+Net Profit   : 498.67
+Strat vs Hold: 3.68
+Longs        : 317
+Sells        : 316
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 633
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_DOGE
+Moving Average Crossover
+Buy and Hold : 130.77%
+Net Profit   : 130.77
+Strategy     : 13.5%
+Net Profit   : 13.5
+Strat vs Hold: -1.17
+Longs        : 168
+Sells        : 168
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 336
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_DOGE
+Exponential Moving Average
+Buy and Hold : 130.77%
+Net Profit   : 130.77
+Strategy     : 5123.37%
+Net Profit   : 5123.37
+Strat vs Hold: 49.93
+Longs        : 1114
+Sells        : 1113
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 2227
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_ETH
+Standard Rolling Average
+Buy and Hold : 465.69%
+Net Profit   : 465.69
+Strategy     : 614.66%
+Net Profit   : 614.66
+Strat vs Hold: 1.49
+Longs        : 295
+Sells        : 294
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 589
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_ETH
+Moving Average Crossover
+Buy and Hold : 465.69%
+Net Profit   : 465.69
+Strategy     : 162.33%
+Net Profit   : 162.33
+Strat vs Hold: -3.03
+Longs        : 181
+Sells        : 180
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 361
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_ETH
+Exponential Moving Average
+Buy and Hold : 465.69%
+Net Profit   : 465.69
+Strategy     : 149.24%
+Net Profit   : 149.24
+Strat vs Hold: -3.16
+Longs        : 1020
+Sells        : 1019
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 2039
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_LTC
+Standard Rolling Average
+Buy and Hold : 197.62%
+Net Profit   : 197.62
+Strategy     : 475.4%
+Net Profit   : 475.4
+Strat vs Hold: 2.78
+Longs        : 350
+Sells        : 349
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 699
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_LTC
+Moving Average Crossover
+Buy and Hold : 197.62%
+Net Profit   : 197.62
+Strategy     : 27.76%
+Net Profit   : 27.76
+Strat vs Hold: -1.7
+Longs        : 189
+Sells        : 188
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 377
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+
+---------------------------------------
+
+Coin: USDT_LTC
+Exponential Moving Average
+Buy and Hold : 197.62%
+Net Profit   : 197.62
+Strategy     : 787.35%
+Net Profit   : 787.35
+Strat vs Hold: 5.9
+Longs        : 1077
+Sells        : 1076
+Shorts       : 0
+Covers       : 0
+--------------------
+Total Trades : 2153
+Training period = 10
+Long training period = 20
+
+---------------------------------------
+Done
+--- 453.0464782714844 seconds ---

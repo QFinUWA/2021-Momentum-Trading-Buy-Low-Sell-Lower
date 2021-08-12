@@ -86,18 +86,19 @@ class backtest():
 
     def results(self):   
         """Print results"""           
-        print("-------------- Results ----------------\n")
+        # print("-------------- Results ----------------\n")
         being_price = self.data.iloc[0]['open']
         final_price = self.data.iloc[-1]['close']
 
-        pc = helpers.percent_change(being_price, final_price)
-        print("Buy and Hold : {0}%".format(round(pc*100, 2)))
-        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc), 2)))
+        pc1 = helpers.percent_change(being_price, final_price)
+        print("Buy and Hold : {0}%".format(round(pc1*100, 2)))
+        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc1), 2)))
         
-        pc = helpers.percent_change(self.account.initial_capital, self.account.total_value(final_price))
-        print("Strategy     : {0}%".format(round(pc*100, 2)))
-        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc), 2)))
-
+        pc2 = helpers.percent_change(self.account.initial_capital, self.account.total_value(final_price))
+        print("Strategy     : {0}%".format(round(pc2*100, 2)))
+        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc2), 2)))
+        print("Strat vs Hold: {0}".format(round(pc2*100-pc1*100, 2)))
+        print("Times Better : {0}".format(round(pc2*100/pc1*100, 2)))
         longs  = len([t for t in self.account.opened_trades if t.type_ == 'long'])
         sells  = len([t for t in self.account.closed_trades if t.type_ == 'long'])
         shorts = len([t for t in self.account.opened_trades if t.type_ == 'short'])
@@ -109,9 +110,9 @@ class backtest():
         print("Covers       : {0}".format(covers))
         print("--------------------")
         print("Total Trades : {0}".format(longs + sells + shorts + covers))
-        print("\n---------------------------------------")
+        # print("\n---------------------------------------")
     
-    def chart(self, show_trades=False, title="Equity Curve"):
+    def chart(self, temptitle, show_trades=False):
         """Chart results.
 
         :param show_trades: Show trades on plot
@@ -119,8 +120,8 @@ class backtest():
         :param title: Plot title
         :type title: str
         """     
-        bokeh.plotting.output_file("chart.html", title=title)
-        p = bokeh.plotting.figure(x_axis_type="datetime", plot_width=1000, plot_height=400, title=title)
+        bokeh.plotting.output_file("chart.html", title=temptitle)
+        p = bokeh.plotting.figure(x_axis_type="datetime", plot_width=1000, plot_height=400, title=temptitle)
         p.grid.grid_line_alpha = 0.3
         p.xaxis.axis_label = 'Date'
         p.yaxis.axis_label = 'Equity'

@@ -1,6 +1,7 @@
 import pandas as pd
 from talib.abstract import *
 import time
+import sys
 
 # local imports
 from gemini_modules import engine
@@ -8,11 +9,10 @@ from gemini_modules import engine
 # read in data preserving dates
 
 # globals
-print("Enter the number of the algorithm to use")
-algorithm_choice = int(input("1: Standard Rolling Average. 2: Moving Average Crossover. 3: Exponential Weighted Moving Average: "))
+# print("Enter the number of the algorithm to use")
+# algorithm_choice = int(input("1: Standard Rolling Average. 2: Moving Average Crossover. 3: Exponential Weighted Moving Average: "))
 training_period = int(input("Training period: "))
-if algorithm_choice == 2:
-    long_training_period = int(input("Long training period: "))
+long_training_period = int(input("Long training period: "))
 start_time = time.time()
 #print("Loading...")
 #backtesting
@@ -100,32 +100,34 @@ def logic3(account, lookback):
 # df4 = pd.read_csv("data/USDT_ETH.csv", parse_dates=[0])
 # df5 = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
 
-# list_of_coins = ["USDT_XRP", "USDT_BTC", "USDT_DOGE", "USDT_ETH", "USDT_LTC"]
-list_of_coins = ["USDT_ETH"]
-
+list_of_coins = ["USDT_XRP", "USDT_BTC", "USDT_DOGE", "USDT_ETH", "USDT_LTC"]
+# list_of_coins = ["USDT_ETH"]
+print("Running, will take ages")
+sys.stdout = open("results.txt", "w")
 for x in list_of_coins: #allow choice of number of coins to use
-    print("Loading...")
-    df = pd.read_csv("data/" + x + ".csv", parse_dates=[0])
-    print("Backtesting...")
-    backtest = engine.backtest(df)
-    if __name__ == "__main__":
-        if algorithm_choice == 1:
-            backtest.start(100, logic)
-            print("Backtesting complete")
-        elif algorithm_choice == 2:
-            backtest.start(100, logic2)
-            print("Backtesting complete")
-        elif algorithm_choice == 3:
-            backtest.start(100, logic3)
-            print("Backtesting complete")
+    for y in range(1,4):
+        algorithm_choice = y
+        # for z in range(1,20):
+        df = pd.read_csv("data/" + x + ".csv", parse_dates=[0])
+        backtest = engine.backtest(df)
+        # print("\n---------------------------------------")
         print("\nCoin: " + x)
-        backtest.results()
-        print("short training period = " + str(training_period))
-        try:
-            print("long training period = " + str(long_training_period))
-        except:
-            pass
-        backtest.chart(x) #add all the coins to the one page
+        if __name__ == "__main__":
+            if algorithm_choice == 1:
+                backtest.start(100, logic)
+                print("Standard Rolling Average")
+            elif algorithm_choice == 2:
+                backtest.start(100, logic2)
+                print("Moving Average Crossover")
+            elif algorithm_choice == 3:
+                backtest.start(100, logic3)
+                print("Exponential Moving Average")
+            backtest.results()
+            print("Training period = " + str(training_period))
+            if algorithm_choice == 2:
+                print("Long training period = " + str(long_training_period))
+            print("\n---------------------------------------")
+            # backtest.chart(x) #add all the coins to the one page
 print("Done")
 print("--- %s seconds ---" % (time.time() - start_time))
-
+sys.stdout.close()
