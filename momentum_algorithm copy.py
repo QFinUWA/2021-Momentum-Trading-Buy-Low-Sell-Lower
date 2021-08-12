@@ -8,11 +8,11 @@ from gemini_modules import engine
 
 # globals
 print("Enter the number of the algorithm to use")
-algorithm_choice = int(input("1: Standard Rolling Average. 2: Moving Average Crossover. 3: Exponential Weighted Moving Average"))
+algorithm_choice = int(input("1: Standard Rolling Average. 2: Moving Average Crossover. 3: Exponential Weighted Moving Average: "))
 training_period = int(input("Training period: "))
 if algorithm_choice == 2:
     long_training_period = int(input("Long training period: "))
-print("Loading...")
+#print("Loading...")
 #backtesting
 
 
@@ -30,11 +30,11 @@ def logic(account, lookback):
                         account.enter_position('long', account.buying_power, lookback['close'][today])
                         #print("bought at" + str(lookback["date"][today]))
             else:
-                if(lookback['close'][today] > price_moving_average):
+                if(lookback['close'][today] > price_moving_average * 1.01):
                     if(lookback['volume'][today] < volumn_moving_average):
                         for position in account.positions:
                                 account.close_position(position, 1, lookback['close'][today])
-                                #print("sold at" + str(lookback["date"][today]))
+                                # print("sold at" + str(lookback["date"][today]))
     except Exception as e:
         print(e)
     pass  # Handles lookback errors in beginning of dataset
@@ -81,7 +81,7 @@ def logic3(account, lookback):
                         account.enter_position('long', account.buying_power, lookback['close'][today])
                         #print("bought at" + str(lookback["date"][today]))
             else:
-                if(lookback['close'][today] > exp_price_moving_average):
+                if(lookback['close'][today] > exp_price_moving_average * 1.01):
                     if(lookback['volume'][today] < volumn_moving_average):
                         for position in account.positions:
                                 account.close_position(position, 1, lookback['close'][today])
@@ -95,9 +95,12 @@ def logic3(account, lookback):
 # df3 = pd.read_csv("data/USDT_DOGE.csv", parse_dates=[0])
 # df4 = pd.read_csv("data/USDT_ETH.csv", parse_dates=[0])
 # df5 = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
+
 list_of_coins = ["USDT_XRP", "USDT_BTC", "USDT_DOGE", "USDT_ETH", "USDT_LTC"]
+# list_of_coins = ["USDT_ETH"]
 
 for x in list_of_coins: #allow choice of number of coins to use
+    print("Loading...")
     df = pd.read_csv("data/" + x + ".csv", parse_dates=[0])
     backtest = engine.backtest(df)
     if __name__ == "__main__":
@@ -107,14 +110,13 @@ for x in list_of_coins: #allow choice of number of coins to use
             backtest.start(100, logic2)
         elif algorithm_choice == 3:
             backtest.start(100, logic3)
-        print("Coin: " + x)
+        print("\nCoin: " + x)
         backtest.results()
         print("short training period = " + str(training_period))
         try:
             print("long training period = " + str(long_training_period))
         except:
             pass
-        print("Loading next")
         backtest.chart() #add all the coins to the one page
 print("Done")
 
