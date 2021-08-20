@@ -1,6 +1,7 @@
 import bokeh.plotting
 import pandas as pd
 import numpy as np
+import statistics
 import warnings
 import time
 
@@ -91,25 +92,28 @@ class backtest():
         final_price = self.data.iloc[-1]['close']
 
         pc1 = helpers.percent_change(being_price, final_price)
-        print("Buy and Hold : {0}%".format(round(pc1*100, 2)))
-        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc1), 2)))
+        # print("Buy and Hold : {0}%".format(round(pc1*100, 2)))
+        # print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc1), 2)))
+        
         
         pc2 = helpers.percent_change(self.account.initial_capital, self.account.total_value(final_price))
-        print("Strategy     : {0}%".format(round(pc2*100, 2)))
-        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc2), 2)))
-        print("Strat vs Hold: {0}".format(round(pc2*100-pc1*100, 2)))
-        print("Times Better : {0}".format(round(pc2*100/pc1*100, 2)))
+        # print("Strategy     : {0}%".format(round(pc2*100, 2)))
+        # print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc2), 2)))
+        # print("Strat vs Hold: {0}".format(round(pc2*100-pc1*100, 2)))
+        # print("Times Better : {0}".format(round(pc2*100/pc1*100, 2)))
         longs  = len([t for t in self.account.opened_trades if t.type_ == 'long'])
         sells  = len([t for t in self.account.closed_trades if t.type_ == 'long'])
         shorts = len([t for t in self.account.opened_trades if t.type_ == 'short'])
         covers = len([t for t in self.account.closed_trades if t.type_ == 'short'])
 
-        print("Longs        : {0}".format(longs))
-        print("Sells        : {0}".format(sells))
-        print("Shorts       : {0}".format(shorts))
-        print("Covers       : {0}".format(covers))
-        print("--------------------")
-        print("Total Trades : {0}".format(longs + sells + shorts + covers))
+        # print("Longs        : {0}".format(longs))
+        # print("Sells        : {0}".format(sells))
+        # print("Shorts       : {0}".format(shorts))
+        # print("Covers       : {0}".format(covers))
+        # print("--------------------")
+        # print("Total Trades : {0}".format(longs + sells + shorts + covers))
+        data = [[round(pc1*100, 2),round(pc2*100, 2),longs,sells,shorts,covers,statistics.stdev(self.account.equity),statistics.stdev([price*self.account.initial_capital/self.data.iloc[0]['open'] for price in self.data['open']])]]
+        return pd.DataFrame(data, columns= ["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold"])
         # print("\n---------------------------------------")
     
     def chart(self, temptitle, show_trades=False):

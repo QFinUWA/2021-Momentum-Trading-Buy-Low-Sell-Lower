@@ -100,15 +100,16 @@ def logic3(account, lookback):
 # df4 = pd.read_csv("data/USDT_ETH.csv", parse_dates=[0])
 # df5 = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
 
-list_of_coins = ["USDT_XRP", "USDT_BTC", "USDT_DOGE", "USDT_ETH", "USDT_LTC"]
+#list_of_coins = ["USDT_ADA", "USDT_BAT", "USDT_BTT", "USDT_DASH", "USDT_ECT","USDT_EOS","USDT_LINK","USDT_NEO","USDT_QTUM","USDT_TRX","USDT_XLM","USDT_XMR","USDT_ZEC"]
+list_of_coins = ["USDT_ADA", "USDT_BAT", "USDT_BTT"]
 # list_of_coins = ["USDT_ETH"]
 print("Running, will take ages")
 sys.stdout = open("results.txt", "w")
 for x in list_of_coins: #allow choice of number of coins to use
-    for y in range(1,4):
-        algorithm_choice = y
+    for y in range(0,1):
+        algorithm_choice = 1
         # for z in range(1,20):
-        df = pd.read_csv("data/" + x + ".csv", parse_dates=[0])
+        df = pd.read_csv("new_data/" + x + ".csv", parse_dates=[0])
         backtest = engine.backtest(df)
         # print("\n---------------------------------------")
         print("\nCoin: " + x)
@@ -127,7 +128,8 @@ for x in list_of_coins: #allow choice of number of coins to use
             if algorithm_choice == 2:
                 print("Long training period = " + str(long_training_period))
             print("\n---------------------------------------")
-            # backtest.chart(x) #add all the coins to the one page
+            backtest.chart(x) #add all the coins to the one page
+            backtest.chart(x) #add all the coins to the one page
 print("Done")
 print("--- %s seconds ---" % (time.time() - start_time))
 sys.stdout.close()
