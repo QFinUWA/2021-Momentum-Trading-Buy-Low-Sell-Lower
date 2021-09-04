@@ -41,12 +41,15 @@ def logic_RSI(account, lookback):
     col_name = "RSI_" + str(training_period_price)
     try:
         today = len(lookback)-1
-        if(lookback[col_name][today] <= 20):
-            if(account.buying_power > 0):
-                account.enter_position('long', account.buying_power, lookback['close'][today]*1.0001)
-        elif(lookback[col_name][today] >= 80):
-            for position in account.positions:
-                account.close_position(position, 1, lookback['close'][today]*0.9999)
+        volumn_moving_average = lookback['volume'].rolling(window=training_period_price).mean()[today]  # update VMA
+        if(lookback[col_name][today] <= 35):
+            if(lookback['volume'][today] > volumn_moving_average):
+                if(account.buying_power > 0):
+                    account.enter_position('long', account.buying_power, lookback['close'][today]*1.0001)
+        elif(lookback[col_name][today] >= 65):
+            if(lookback['volume'][today] < volumn_moving_average):
+                for position in account.positions:
+                    account.close_position(position, 1, lookback['close'][today]*0.9999)
     except Exception as e:
         print(e)
     pass
