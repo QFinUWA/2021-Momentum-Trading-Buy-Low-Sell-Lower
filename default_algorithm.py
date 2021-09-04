@@ -8,12 +8,9 @@ import numpy as np
 # local imports
 from gemini_modules import engine
 
-
-
 # globals
 training_period_price = None
 training_period_volume = None
-# long_training_period = int(input("Long training period: "))
 start_time = time.time()
 price_array = np.array([])
 volume_array = np.array([])
@@ -53,14 +50,13 @@ def logic(account, lookback):
 
 
 grid_search = pd.DataFrame(columns=["Coin","Strategy_Name","Volume_Window","Price_Window","Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold"])
-# list_of_coins = ["USDT_ADA", "USDT_BAT", "USDT_BTT", "USDT_DASH", "USDT_ECT","USDT_EOS","USDT_LINK","USDT_NEO","USDT_QTUM","USDT_TRX","USDT_XLM","USDT_XMR","USDT_ZEC"]
 lock = threading.Lock()
 
 list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 
 def backtest_coin(coiname):
     global grid_search
-    df = pd.read_csv("data/" + coiname + ".csv", parse_dates=[0])
+    df = pd.read_csv("../data/" + coiname + ".csv", parse_dates=[0])
     backtest = engine.backtest(df)
     backtest.start(100000, logic)
     lock.acquire()
@@ -71,19 +67,17 @@ def backtest_coin(coiname):
     data['Price_Window'] = training_period_price
     grid_search = grid_search.append(data,ignore_index=True)
     lock.release()
-    # print("Finished algorithm for coin: "+coiname)
 
 
 threads = list()
 
 def main():
     global training_period_price,training_period_volume
-    for vol in range(1,50):
-        training_period_volume = vol
-        print("PERCENTAGE DONE: "+str(vol*2)+"%")
-        for pric in range(1,50):
-            print("PERCENTAGE1 DONE: "+str(pric*2)+"%")
-            training_period_price = pric
+    for vol in range(1,25):
+        training_period_volume = vol*2
+        print("PERCENTAGE DONE: "+str(vol*4)+"%")
+        for pric in range(1,25):
+            training_period_price = pric*2
             for x in list_of_coins:
                 try:
                     g = threading.Thread(target=backtest_coin, args=(x,))
@@ -99,7 +93,7 @@ print("Running Algorithms...")
     
 main()
    
-grid_search.to_csv("results.csv")
+grid_search.to_csv("results/default.csv")
 print("Done")
 print("--- %s seconds ---" % (time.time() - start_time))
 
