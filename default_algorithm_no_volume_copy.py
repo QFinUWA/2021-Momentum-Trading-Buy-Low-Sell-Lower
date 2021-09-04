@@ -20,13 +20,10 @@ def logic(account, lookback):
     try:
         today = len(lookback)-1
         price_array = np.append(price_array,lookback['close'][today])
-
         if(len(price_array) > training_period_price):
             price_array = np.delete(price_array,0) 
-        
         if(today > training_period_price): 
             price_moving_average = np.mean(price_array) 
-            # print( str(price_moving_average) + " VS" + str(lookback['close'].rolling(window=training_period_price).mean()[today]))
             if(lookback['close'][today] <= price_moving_average):
                     if(account.buying_power > 0):
                         account.enter_position('long', account.buying_power, lookback['close'][today]*1.0001)
@@ -34,7 +31,6 @@ def logic(account, lookback):
                 if(lookback['close'][today] >= price_moving_average):
                         for position in account.positions:
                                 account.close_position(position, 1, lookback['close'][today]*0.9999)
-
     except Exception as e:
         print(e)
     pass  # Handles lookback errors in beginning of dataset
@@ -50,7 +46,7 @@ def backtest_coin(coiname,pric,results):
     training_period_price = pric
     df = pd.read_csv("data/" + coiname + ".csv", parse_dates=[0])
     backtest = engine.backtest(df)
-    backtest.start(100000, logic)
+    backtest.start(1000, logic)
     lock.acquire()
     data = backtest.results()
     data.append(coiname) #coinname
