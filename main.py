@@ -11,7 +11,7 @@ from gemini_modules import engine
 # LOGIC FUNCTIONS
 LOGIC0 = {
     "name":"standard_no_volume",
-    "active": True,
+    "active": False,
     "price_start_index": 50,
     "price_end_index": 52,
     "price_multiplier": 2,
@@ -22,7 +22,7 @@ LOGIC0 = {
 
 LOGIC1 = {
     "name":"standard",
-    "active": True,
+    "active": False,
     "price_start_index": 22,
     "price_end_index": 25,
     "price_multiplier": 2,
@@ -37,7 +37,7 @@ LOGIC1 = {
 LOGIC2 = {
     "name":"exp_no_volume",
     "active": True,
-    "price_start_index": 23,
+    "price_start_index": 0,
     "price_end_index": 25,
     "price_multiplier": 2,
     "price_index":0,
@@ -46,14 +46,14 @@ LOGIC2 = {
 }
 
 LOGIC3 = {
-    "name":"exp_no_volume",
+    "name":"Crossover moving average",
     "active": True,
-    "price_start_index": 23,
+    "price_start_index": 0,
     "price_end_index": 25,
     "price_multiplier": 2,
     "price_index":0,
-    "price_long_start_index": 10,
-    "price_long_end_index": 12,
+    "price_long_start_index": 0,
+    "price_long_end_index": 25,
     "price_long_multiplier": 2,
     "price_long_index":0,
     "volume_index":0,
@@ -190,11 +190,11 @@ def logic3(account, lookback):
 
 
 
-list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
+list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP","USDT_DASH","USDT_NEO"]
 
 lock = mp.Lock()
 def backtest_coin(results,coin,logic_function,logic):
-    df = pd.read_csv("data/" + coin + ".csv", parse_dates=[0])
+    df = pd.read_csv("train_data/" + coin + ".csv", parse_dates=[0])
     updateglobals(logic_function)
     backtest = engine.backtest(df)
     backtest.start(1000, logic)
@@ -239,6 +239,7 @@ if __name__ == "__main__":
     print("Done Logic 0")
     if(LOGIC2.active):
         for price_window in range(LOGIC2.price_start_index,LOGIC2.price_end_index):
+            print("logic 2",price_window)
             LOGIC2.price_index = price_window*LOGIC2.price_multiplier
             processes = []
             for coin in list_of_coins:
@@ -251,6 +252,7 @@ if __name__ == "__main__":
 
     if(LOGIC3.active):
         for price_window in range(LOGIC3.price_start_index,LOGIC3.price_end_index):
+            print("logic 3", price_window)
             LOGIC3.price_index = price_window*LOGIC3.price_multiplier
             for price_window_long in range(LOGIC3.price_long_start_index,LOGIC3.price_long_end_index):
                 LOGIC3.price_long_index = price_window_long*LOGIC3.price_long_multiplier
@@ -266,6 +268,6 @@ if __name__ == "__main__":
 
 
     df = DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin",'Strategy_Name','Volume_Window','Price_Window','Long_Price_Window'])
-    df.to_csv("results.csv",index =False)
+    df.to_csv("resultsovernightjake.csv",index =False)
     print("Done")
     print('That took {} seconds'.format(time.time() - starttime))
