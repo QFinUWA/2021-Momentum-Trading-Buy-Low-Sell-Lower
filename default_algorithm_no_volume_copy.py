@@ -1,7 +1,7 @@
 import pandas as pd
+from pandas import DataFrame
 from talib.abstract import *
 import time
-import threading
 import numpy as np
 import multiprocessing as mp
 
@@ -12,6 +12,7 @@ from gemini_modules import engine
 # training_period_price = 0
 start_time = time.time()
 price_array = np.array([])
+
 
 '''Algorithm function, lookback is a data frame parsed to function continuously until end of initial dataframe is reached.'''
 def logic(account, lookback):
@@ -40,27 +41,24 @@ def logic(account, lookback):
 
 
 grid_search = pd.DataFrame(columns=["Coin","Strategy_Name","Volume_Window","Price_Window","Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold"])
-# lock = threading.Lock()
+lock = mp.Lock()
 
 list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 
-def backtest_coin(coiname,pric):
-    global training_period_price
+def backtest_coin(coiname,pric,results):
+    global training_period_price,lock
     training_period_price = pric
-    global grid_search
     df = pd.read_csv("data/" + coiname + ".csv", parse_dates=[0])
     backtest = engine.backtest(df)
     backtest.start(100000, logic)
-    # lock.acquire()
+    lock.acquire()
     data = backtest.results()
-    data['Coin'] = coiname
-    data['Strategy_Name'] = "Classic_No_Volume"
-    data['Volume_Window'] = "None"
-    data['Price_Window'] = training_period_price
-    grid_search = grid_search.append(data,ignore_index=True)
-    csv_name = coiname + "_" + "No_Volume" + "_" + str(training_period_price) + "_" + str(time.time()) + ".csv"
-    grid_search.to_csv(csv_name)
-    # lock.release()
+    data.append(coiname) #coinname
+    data.append("Classic_No_Volume")#'Strategy_Name'
+    data.append("None")#'Volume_Window'
+    data.append(training_period_price)#'Price_Window'
+    results.append(data)
+    lock.release()
 
 if __name__ == "__main__":
     print("Running Algorithms...")
@@ -68,19 +66,22 @@ if __name__ == "__main__":
     # global training_period_price
     # training_period_price = 5
     # print("--- %s seconds ---" % (time.time() - start_time))
+    manager = mp.Manager()
+    results = manager.list()
     starttime = time.time()
-    for pric in range(8,11):
+    for pric in range(8,10):
         # print("PERCENTAGE DONE: "+str(pric*4)+"%")
         # training_period_price = pric
         # print(training_period_price)
         processes = []
         for i in list_of_coins:
-            p = mp.Process(target=backtest_coin, args=(i,pric,))
+            p = mp.Process(target=backtest_coin, args=(i,pric,results))
             processes.append(p)
             p.start()
-            
         for process in processes:
             process.join()
-    
+
+    df = DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin",'Strategy_Name','Volume_Window','Price_Window'])
+    df.to_csv("results.csv",index =False)
     print("Done")
     print('That took {} seconds'.format(time.time() - starttime))
