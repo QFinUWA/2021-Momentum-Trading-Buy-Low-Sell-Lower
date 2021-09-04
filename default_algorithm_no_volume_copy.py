@@ -3,12 +3,13 @@ from talib.abstract import *
 import time
 import threading
 import numpy as np
+import multiprocessing as mp
 
 # local imports
 from gemini_modules import engine
 
 # globals
-training_period_price = None
+# training_period_price = 0
 start_time = time.time()
 price_array = np.array([])
 
@@ -39,49 +40,47 @@ def logic(account, lookback):
 
 
 grid_search = pd.DataFrame(columns=["Coin","Strategy_Name","Volume_Window","Price_Window","Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold"])
-lock = threading.Lock()
+# lock = threading.Lock()
 
 list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
 
-def backtest_coin(coiname):
+def backtest_coin(coiname,pric):
+    global training_period_price
+    training_period_price = pric
     global grid_search
     df = pd.read_csv("data/" + coiname + ".csv", parse_dates=[0])
     backtest = engine.backtest(df)
     backtest.start(100000, logic)
-    lock.acquire()
+    # lock.acquire()
     data = backtest.results()
     data['Coin'] = coiname
     data['Strategy_Name'] = "Classic_No_Volume"
     data['Volume_Window'] = "None"
     data['Price_Window'] = training_period_price
     grid_search = grid_search.append(data,ignore_index=True)
-    lock.release()
+    csv_name = coiname + "_" + "No_Volume" + "_" + str(training_period_price) + "_" + str(time.time()) + ".csv"
+    grid_search.to_csv(csv_name)
+    # lock.release()
 
-threads = list()
-
-def main():
-    global training_period_price
-    for pric in range(10,11):
-        print("PERCENTAGE DONE: "+str(pric*4)+"%")
-        print(pric)
-        training_period_price = pric
-        for x in list_of_coins:
-            try:
-                # g = threading.Thread(target=backtest_coin, args=(x,))
-                # g.start()
-                # threads.append(g)
-                backtest_coin(x)
-            except:
-                print("Error: unable to start thread")
-        for thread in threads:
-            thread.join()
-
- 
 if __name__ == "__main__":
-    print("Running Algorithms...")   
-    main()
-    grid_search.to_csv("default_no_volume.csv")
-    print(grid_search.head())
+    print("Running Algorithms...")
+    # print(training_period_price)
+    # global training_period_price
+    # training_period_price = 5
+    # print("--- %s seconds ---" % (time.time() - start_time))
+    starttime = time.time()
+    for pric in range(8,11):
+        # print("PERCENTAGE DONE: "+str(pric*4)+"%")
+        # training_period_price = pric
+        # print(training_period_price)
+        processes = []
+        for i in list_of_coins:
+            p = mp.Process(target=backtest_coin, args=(i,pric,))
+            processes.append(p)
+            p.start()
+            
+        for process in processes:
+            process.join()
+    
     print("Done")
-    print("--- %s seconds ---" % (time.time() - start_time))
-
+    print('That took {} seconds'.format(time.time() - starttime))

@@ -101,11 +101,11 @@ def logic3(account, lookback):
 # df5 = pd.read_csv("data/USDT_LTC.csv", parse_dates=[0])
 
 # list_of_coins = ["USDT_XRP", "USDT_BTC", "USDT_DOGE", "USDT_ETH", "USDT_LTC"]
-list_of_coins = ["USDT_ETH"]
+list_of_coins = ["USDT_LTC"]
 
 for x in list_of_coins: #allow choice of number of coins to use
     print("Loading...")
-    df = pd.read_csv("data/" + x + ".csv", parse_dates=[0])
+    df = pd.read_csv("new_data/" + x + ".csv", parse_dates=[0])
     print("Backtesting...")
     backtest = engine.backtest(df)
     if __name__ == "__main__":

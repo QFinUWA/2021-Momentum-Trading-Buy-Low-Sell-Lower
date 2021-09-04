@@ -43,7 +43,6 @@ def logic(account, lookback):
                     if(lookback['volume'][today] <= volume_moving_average):
                         for position in account.positions:
                                 account.close_position(position, 1, lookback['close'][today]*0.9999)
-
     except Exception as e:
         print(e)
     pass  # Handles lookback errors in beginning of dataset
