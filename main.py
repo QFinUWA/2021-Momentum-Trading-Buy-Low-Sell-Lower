@@ -12,8 +12,8 @@ from gemini_modules import engine
 LOGIC0 = {
     "name":"standard_no_volume",
     "active": True,
-    "price_start_index": 50,
-    "price_end_index": 52,
+    "price_start_index": 0,
+    "price_end_index": 25,
     "price_multiplier": 2,
     "price_index":0,
     "volume_index":0,
@@ -23,7 +23,7 @@ LOGIC0 = {
 LOGIC1 = {
     "name":"standard",
     "active": True,
-    "price_start_index": 22,
+    "price_start_index": 0,
     "price_end_index": 25,
     "price_multiplier": 2,
     "price_index":0,
@@ -36,7 +36,7 @@ LOGIC1 = {
 
 LOGIC2 = {
     "name":"exp_no_volume",
-    "active": True,
+    "active": False,
     "price_start_index": 23,
     "price_end_index": 25,
     "price_multiplier": 2,
@@ -47,11 +47,11 @@ LOGIC2 = {
 
 LOGIC3 = {
     "name":"exp_no_volume",
-    "active": True,
+    "active": False,
     "price_start_index": 23,
     "price_end_index": 25,
     "price_multiplier": 2,
-    "price_index":0,
+    "price_index": 0,
     "price_long_start_index": 10,
     "price_long_end_index": 12,
     "price_long_multiplier": 2,
@@ -82,16 +82,14 @@ volume_window = None
 
 
 def updateglobals(logic_function):
-    global price_window
-    global price_array
-    global volume_array
-    global volume_window
-    global price_window_long
+    global price_window,price_array,volume_array,volume_window,price_window_long
     price_array = np.array([])
     volume_array = np.array([])
     price_window = logic_function.price_index
     volume_window = logic_function.volume_index
     price_window_long = logic_function.price_long_index
+
+
 
 def logic0(account, lookback):
     global price_window,price_array
@@ -110,7 +108,7 @@ def logic0(account, lookback):
             else:
                 if(lookback['close'][today] >= price_moving_average):
                         for position in account.positions:
-                                account.close_position(position, 1, lookback['close'][today]*0.9999)
+                            account.close_position(position, 1, lookback['close'][today]*0.9999)
     except Exception as e:
         print(e)
     pass  # Handles lookback errors in beginning of dataset
@@ -153,12 +151,12 @@ def logic2(account, lookback):
             exp_price_moving_average = lookback['close'].ewm(span=price_window).mean()[today]  # update PMA
             if(lookback['close'][today] <= exp_price_moving_average):
                 if(account.buying_power > 0):
-                    account.enter_position('long', account.buying_power, lookback['close'][today])
+                    account.enter_position('long', account.buying_power, lookback['close'][today]*1.0001)
                     #print("bought at" + str(lookback["date"][today]))
             else:
                 if(lookback['close'][today] >= exp_price_moving_average):
                     for position in account.positions:
-                            account.close_position(position, 1, lookback['close'][today])
+                            account.close_position(position, 1, lookback['close'][today]*0.9999)
                             #print("sold at" + str(lookback["date"][today]))
     except Exception as e:
         print(e)
@@ -178,11 +176,11 @@ def logic3(account, lookback):
             
             if(yesterday_short_price_moving_average < yesterday_long_price_moving_average and short_price_moving_average >= long_price_moving_average):
                     if(account.buying_power > 0):
-                        account.enter_position('long', account.buying_power, lookback['close'][today])
+                        account.enter_position('long', account.buying_power, lookback['close'][today]*1.0001)
             else:
                 if(yesterday_long_price_moving_average < yesterday_short_price_moving_average and long_price_moving_average >= short_price_moving_average):
                         for position in account.positions:
-                                account.close_position(position, 1, lookback['close'][today])
+                                account.close_position(position, 1, lookback['close'][today]*0.9999)
 
     except Exception as e:
         print(e)
@@ -190,7 +188,7 @@ def logic3(account, lookback):
 
 
 
-list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
+list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP","USDT_DASH","USDT_NEO"]
 
 lock = mp.Lock()
 def backtest_coin(results,coin,logic_function,logic):
@@ -210,7 +208,6 @@ if __name__ == "__main__":
     manager = mp.Manager()
     results = manager.list()
     starttime = time.time()
-
     if(LOGIC0.active):
         for price_window in range(LOGIC0.price_start_index,LOGIC0.price_end_index):
             LOGIC0.price_index = price_window*LOGIC0.price_multiplier
@@ -236,7 +233,7 @@ if __name__ == "__main__":
                 for process in processes:
                     process.join()
                     processes.remove(process)
-    print("Done Logic 0")
+    print("Done Logic 1")
     if(LOGIC2.active):
         for price_window in range(LOGIC2.price_start_index,LOGIC2.price_end_index):
             LOGIC2.price_index = price_window*LOGIC2.price_multiplier
@@ -248,7 +245,7 @@ if __name__ == "__main__":
             for process in processes:
                 process.join()
                 processes.remove(process)
-
+    print("Done Logic 2")
     if(LOGIC3.active):
         for price_window in range(LOGIC3.price_start_index,LOGIC3.price_end_index):
             LOGIC3.price_index = price_window*LOGIC3.price_multiplier
