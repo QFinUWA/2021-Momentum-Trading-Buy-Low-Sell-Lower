@@ -58,14 +58,14 @@ def logic_RSI(account, lookback):
 # grid_search = pd.DataFrame(columns=["Coin","Strategy_Name","Volume_Window","Price_Window","Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold"])
 lock = mp.Lock()
 
-list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
-# list_of_coins2 = ["USDT_BAT", "USDT_BTT", "USDT_DASH", "USDT_ECT","USDT_EOS","USDT_LINK","USDT_NEO","USDT_QTUM","USDT_TRX","USDT_XLM","USDT_XMR","USDT_ZEC"]
+# list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP"]
+list_of_coins2 = ["USDT_BAT", "USDT_BTT", "USDT_DASH", "USDT_ECT","USDT_EOS","USDT_LINK","USDT_NEO","USDT_QTUM","USDT_TRX","USDT_XLM","USDT_XMR","USDT_ZEC"]
 
 def backtest_coin(coiname,pric,results):
     global training_period_price,lock
     training_period_price = pric
-    df = pd.read_csv("data/" + coiname + ".csv", parse_dates=[0])
-    # df = pd.read_csv("new_data/" + coiname + ".csv", parse_dates=[0])
+    # df = pd.read_csv("data/" + coiname + ".csv", parse_dates=[0])
+    df = pd.read_csv("new_data/" + coiname + ".csv", parse_dates=[0])
     do_rsi = True
     if do_rsi == True:
         col_name = "RSI_" + str(training_period_price)
@@ -98,8 +98,8 @@ if __name__ == "__main__":
         # print("PERCENTAGE DONE: "+str(pric*4)+"%")
         # training_period_price = pric
         processes = []
-        for i in list_of_coins:
-        # for i in list_of_coins2:
+        # for i in list_of_coins:
+        for i in list_of_coins2:
             p = mp.Process(target=backtest_coin, args=(i,pric,results))
             processes.append(p)
             p.start()
