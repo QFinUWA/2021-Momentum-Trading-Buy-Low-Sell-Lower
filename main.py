@@ -147,7 +147,7 @@ def logic1(account, lookback):
 def logic2(account, lookback):
     try:
         today = len(lookback)-1
-        if(today > price_window): 
+        if(today > price_window and price_window_long != 0):
             exp_price_moving_average = lookback['close'].ewm(span=price_window).mean()[today]  # update PMA
             if(lookback['close'][today] <= exp_price_moving_average):
                 if(account.buying_power > 0):
