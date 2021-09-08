@@ -11,9 +11,9 @@ from gemini_modules import engine
 # LOGIC FUNCTIONS
 LOGIC0 = {
     "name":"standard_no_volume",
-    "active": True,
-    "price_start_index": 0,
-    "price_end_index": 25,
+    "active": False,
+    "price_start_index": 50,
+    "price_end_index": 52,
     "price_multiplier": 2,
     "price_index":0,
     "volume_index":0,
@@ -22,8 +22,8 @@ LOGIC0 = {
 
 LOGIC1 = {
     "name":"standard",
-    "active": True,
-    "price_start_index": 0,
+    "active": False,
+    "price_start_index": 22,
     "price_end_index": 25,
     "price_multiplier": 2,
     "price_index":0,
@@ -46,14 +46,14 @@ LOGIC2 = {
 }
 
 LOGIC3 = {
-    "name":"exp_no_volume",
+    "name":"Crossover moving average",
     "active": False,
     "price_start_index": 0,
     "price_end_index": 25,
     "price_multiplier": 2,
-    "price_index": 0,
-    "price_long_start_index": 10,
-    "price_long_end_index": 12,
+    "price_index":0,
+    "price_long_start_index": 0,
+    "price_long_end_index": 25,
     "price_long_multiplier": 2,
     "price_long_index":0,
     "volume_index":0,
@@ -146,7 +146,7 @@ def logic1(account, lookback):
 def logic2(account, lookback):
     try:
         today = len(lookback)-1
-        if(today > price_window): 
+        if(today > price_window and price_window != 0):
             exp_price_moving_average = lookback['close'].ewm(span=price_window).mean()[today]  # update PMA
             if(lookback['close'][today] <= exp_price_moving_average):
                 if(account.buying_power > 0):
@@ -249,6 +249,7 @@ if __name__ == "__main__":
     print("Done Logic 2")
     if(LOGIC3.active):
         for price_window in range(LOGIC3.price_start_index,LOGIC3.price_end_index):
+            print("logic 3", price_window)
             LOGIC3.price_index = price_window*LOGIC3.price_multiplier
             for price_window_long in range(LOGIC3.price_long_start_index,LOGIC3.price_long_end_index):
                 LOGIC3.price_long_index = price_window_long*LOGIC3.price_long_multiplier
@@ -264,6 +265,6 @@ if __name__ == "__main__":
 
 
     df = DataFrame(list(results),columns=["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold","Coin",'Strategy_Name','Volume_Window','Price_Window','Long_Price_Window'])
-    df.to_csv("results.csv",index =False)
+    df.to_csv("resultsbugtest.csv",index =False)
     print("Done")
     print('That took {} seconds'.format(time.time() - starttime))
