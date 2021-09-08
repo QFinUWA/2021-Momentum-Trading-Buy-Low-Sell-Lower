@@ -27,9 +27,9 @@ LOGIC1 = {
     "price_end_index": 25,
     "price_multiplier": 2,
     "price_index":0,
-    "volume_start_index": 24,
+    "volume_start_index": 0,
     "volume_end_index": 25,
-    "volume_multiplier": 1,
+    "volume_multiplier": 2,
     "volume_index":0,
     "price_long_index":0,
 }
@@ -37,7 +37,7 @@ LOGIC1 = {
 LOGIC2 = {
     "name":"exp_no_volume",
     "active": False,
-    "price_start_index": 23,
+    "price_start_index": 0,
     "price_end_index": 25,
     "price_multiplier": 2,
     "price_index":0,
@@ -48,7 +48,7 @@ LOGIC2 = {
 LOGIC3 = {
     "name":"exp_no_volume",
     "active": False,
-    "price_start_index": 23,
+    "price_start_index": 0,
     "price_end_index": 25,
     "price_multiplier": 2,
     "price_index": 0,
@@ -96,19 +96,18 @@ def logic0(account, lookback):
     try:
         today = len(lookback)-1
         price_array = np.append(price_array,lookback['close'][today])
-
         if(len(price_array) > price_window):
             price_array = np.delete(price_array,0) 
 
-        if(today > price_window): 
+        if(today > price_window and len(price_array)>0):
             price_moving_average = np.mean(price_array) 
             if(lookback['close'][today] <= price_moving_average):
                     if(account.buying_power > 0):
                         account.enter_position('long', account.buying_power, lookback['close'][today]*1.0001)
             else:
                 if(lookback['close'][today] >= price_moving_average):
-                        for position in account.positions:
-                            account.close_position(position, 1, lookback['close'][today]*0.9999)
+                    for position in account.positions:
+                        account.close_position(position, 1, lookback['close'][today]*0.9999)
     except Exception as e:
         print(e)
     pass  # Handles lookback errors in beginning of dataset
@@ -128,7 +127,7 @@ def logic1(account, lookback):
         if(len(volume_array) > volume_window):
             volume_array = np.delete(volume_array,0)    
         
-        if(today > price_window and today > volume_window): 
+        if(today > price_window and today > volume_window and len(price_array) > 0 and len(volume_array) > 0): 
             price_moving_average = np.mean(price_array)
             volume_moving_average = np.mean(volume_array)  
             if(lookback['close'][today] <= price_moving_average):
@@ -192,7 +191,7 @@ list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP","USDT_DA
 
 lock = mp.Lock()
 def backtest_coin(results,coin,logic_function,logic):
-    df = pd.read_csv("data/" + coin + ".csv", parse_dates=[0])
+    df = pd.read_csv("train_data/" + coin + ".csv", parse_dates=[0])
     updateglobals(logic_function)
     backtest = engine.backtest(df)
     backtest.start(1000, logic)
@@ -210,6 +209,7 @@ if __name__ == "__main__":
     starttime = time.time()
     if(LOGIC0.active):
         for price_window in range(LOGIC0.price_start_index,LOGIC0.price_end_index):
+            print("LOGIC 1: COMPLETED: " + str(price_window) + " REMAINING: "+  str(LOGIC0.price_end_index) )
             LOGIC0.price_index = price_window*LOGIC0.price_multiplier
             processes = []
             for coin in list_of_coins:
@@ -224,6 +224,7 @@ if __name__ == "__main__":
         for price_window in range(LOGIC1.price_start_index,LOGIC1.price_end_index):
             LOGIC1.price_index = price_window*LOGIC1.price_multiplier
             for volume_window in range(LOGIC1.volume_start_index,LOGIC1.volume_end_index):
+                print("LOGIC 0: COMPLETED: " + str(price_window) +":"+ str(volume_window) + " REMAINING: "+ str(LOGIC1.price_end_index) + ":"+str(LOGIC1.volume_end_index) )
                 LOGIC1.volume_index = volume_window*LOGIC1.volume_multiplier
                 processes = []
                 for coin in list_of_coins:
@@ -236,7 +237,7 @@ if __name__ == "__main__":
     print("Done Logic 1")
     if(LOGIC2.active):
         for price_window in range(LOGIC2.price_start_index,LOGIC2.price_end_index):
-            LOGIC2.price_index = price_window*LOGIC2.price_multiplier
+            LOGIC2.price_index = price_window*LOGIC2.price_multiplier 
             processes = []
             for coin in list_of_coins:
                 p = mp.Process(target=backtest_coin, args=(results,coin,LOGIC2,logic2))
