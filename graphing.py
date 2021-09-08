@@ -28,7 +28,7 @@ for a, b in df.groupby(["Strategy_Name","Coin"]):
         #     yaxis.append(value["y-axis"].values.tolist())
         # arrays = [np.array(x) for x in yaxis]
         # result = [np.mean(k) for k in zip(*arrays)]
-        # plt.plot(xaxis, result, label = "Price window: "+str(a[1]))
+        # plt.plot(xaxis, result, label = "Volume window: "+str(a[1]))
         # plt.xlabel('Price Window')
         # plt.ylabel('Percentage improvement on Buy and Hold')
         # plt.title('% profit on coin: '+str(a[1]))
@@ -45,7 +45,7 @@ for a, b in df.groupby(["Strategy_Name","Coin"]):
         plt.plot(xaxis, result, label = "Price window: "+str(a[1]))
         plt.xlabel('Volume Window')
         plt.ylabel('Percentage improvement on Buy and Hold')
-        plt.title('% profit on coin: '+str(a[1]))
+        plt.title('% profit for standard')
         plt.legend()
 plt.show()
         
