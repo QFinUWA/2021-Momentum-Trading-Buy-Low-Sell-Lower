@@ -36,7 +36,7 @@ LOGIC1 = {
 
 LOGIC2 = {
     "name":"exp_no_volume",
-    "active": False,
+    "active": True,
     "price_start_index": 0,
     "price_end_index": 25,
     "price_multiplier": 2,
