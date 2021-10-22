@@ -191,7 +191,7 @@ list_of_coins = ["USDT_ADA","USDT_BTC","USDT_ETH","USDT_LTC","USDT_XRP","USDT_DA
 
 lock = mp.Lock()
 def backtest_coin(results,coin,logic_function,logic):
-    df = pd.read_csv("train_data/" + coin + ".csv", parse_dates=[0])
+    df = pd.read_csv("data/" + coin + ".csv", parse_dates=[0])
     updateglobals(logic_function)
     backtest = engine.backtest(df)
     backtest.start(1000, logic)
