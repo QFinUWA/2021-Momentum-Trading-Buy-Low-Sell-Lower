@@ -1,6 +1,7 @@
 import bokeh.plotting
 import pandas as pd
 import numpy as np
+import statistics
 import warnings
 import time
 
@@ -86,32 +87,37 @@ class backtest():
 
     def results(self):   
         """Print results"""           
-        print("-------------- Results ----------------\n")
+        # print("-------------- Results ----------------\n")
         being_price = self.data.iloc[0]['open']
         final_price = self.data.iloc[-1]['close']
 
-        pc = helpers.percent_change(being_price, final_price)
-        print("Buy and Hold : {0}%".format(round(pc*100, 2)))
-        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc), 2)))
+        pc1 = helpers.percent_change(being_price, final_price)
+        # print("Buy and Hold : {0}%".format(round(pc1*100, 2)))
+        # print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc1), 2)))
         
-        pc = helpers.percent_change(self.account.initial_capital, self.account.total_value(final_price))
-        print("Strategy     : {0}%".format(round(pc*100, 2)))
-        print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc), 2)))
-
+        
+        pc2 = helpers.percent_change(self.account.initial_capital, self.account.total_value(final_price))
+        # print("Strategy     : {0}%".format(round(pc2*100, 2)))
+        # print("Net Profit   : {0}".format(round(helpers.profit(self.account.initial_capital, pc2), 2)))
+        # print("Strat vs Hold: {0}".format(round(pc2*100-pc1*100, 2)))
+        # print("Times Better : {0}".format(round(pc2*100/pc1*100, 2)))
         longs  = len([t for t in self.account.opened_trades if t.type_ == 'long'])
         sells  = len([t for t in self.account.closed_trades if t.type_ == 'long'])
         shorts = len([t for t in self.account.opened_trades if t.type_ == 'short'])
         covers = len([t for t in self.account.closed_trades if t.type_ == 'short'])
 
-        print("Longs        : {0}".format(longs))
-        print("Sells        : {0}".format(sells))
-        print("Shorts       : {0}".format(shorts))
-        print("Covers       : {0}".format(covers))
-        print("--------------------")
-        print("Total Trades : {0}".format(longs + sells + shorts + covers))
-        print("\n---------------------------------------")
+        # print("Longs        : {0}".format(longs))
+        # print("Sells        : {0}".format(sells))
+        # print("Shorts       : {0}".format(shorts))
+        # print("Covers       : {0}".format(covers))
+        # print("--------------------")
+        # print("Total Trades : {0}".format(longs + sells + shorts + covers))
+        # data = [[round(pc1*100, 2),round(pc2*100, 2),longs,sells,shorts,covers,statistics.stdev(self.account.equity),statistics.stdev([price*self.account.initial_capital/self.data.iloc[0]['open'] for price in self.data['open']])]]
+        # return pd.DataFrame(data, columns= ["Buy and Hold","Strategy","Longs","Sells","Shorts","Covers","Stdev_Strategy","Stdev_Hold"])
+        # print("\n---------------------------------------")
+        return [round(pc1*100, 2),round(pc2*100, 2),longs,sells,shorts,covers,statistics.stdev(self.account.equity),statistics.stdev([price*self.account.initial_capital/self.data.iloc[0]['open'] for price in self.data['open']])]
     
-    def chart(self, show_trades=False, title="Equity Curve"):
+    def chart(self, temptitle, show_trades=False):
         """Chart results.
 
         :param show_trades: Show trades on plot
@@ -119,15 +125,15 @@ class backtest():
         :param title: Plot title
         :type title: str
         """     
-        bokeh.plotting.output_file("chart.html", title=title)
-        p = bokeh.plotting.figure(x_axis_type="datetime", plot_width=1000, plot_height=400, title=title)
+        bokeh.plotting.output_file("chart.html", title=temptitle)
+        p = bokeh.plotting.figure(x_axis_type="datetime", plot_width=1000, plot_height=400, title=temptitle)
         p.grid.grid_line_alpha = 0.3
         p.xaxis.axis_label = 'Date'
         p.yaxis.axis_label = 'Equity'
         shares = self.account.initial_capital/self.data.iloc[0]['open']
         base_equity = [price*shares for price in self.data['open']]      
-        p.line(self.data['date'], base_equity, color='#CAD8DE', legend='Buy and Hold')
-        p.line(self.data['date'], self.account.equity, color='#49516F', legend='Strategy')
+        p.line(self.data['date'], base_equity, color='#CAD8DE', legend_label='Buy and Hold')
+        p.line(self.data['date'], self.account.equity, color='#49516F', legend_label='Strategy')
         p.legend.location = "top_left"
 
         if show_trades:

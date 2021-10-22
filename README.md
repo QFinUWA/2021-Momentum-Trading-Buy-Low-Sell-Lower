@@ -14,4 +14,4 @@ Installation and Run:
         2.2 Linux installation: 
             https://sachsenhofer.io/install-ta-lib-ubuntu-server/
 
-    3. python momentum_algorithm.py 
+    3. python parameter_sweep.py 
